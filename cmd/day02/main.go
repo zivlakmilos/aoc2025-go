@@ -45,6 +45,48 @@ func checkIsValid01(id int) bool {
 	return false
 }
 
+func checkIsValid02(id int) bool {
+	digits := make([]uint8, 100)
+	count := 0
+
+	for id > 0 {
+		dig := uint8(id % 10)
+		id /= 10
+
+		digits[count] = dig
+		count++
+	}
+
+	right := 1
+	for right < count {
+		if digits[right] != digits[0] {
+			right++
+			continue
+		}
+
+		if count%right != 0 {
+			right++
+			continue
+		}
+
+		found := true
+		for i := range right {
+			digit := digits[i]
+			for j := i + right; j < count; j += right {
+				if digit != digits[j] {
+					found = false
+				}
+			}
+		}
+		if found {
+			return false
+		}
+		right++
+	}
+
+	return true
+}
+
 func solvePuzzle01() {
 	input := getInput()
 	res := 0
@@ -61,6 +103,18 @@ func solvePuzzle01() {
 }
 
 func solvePuzzle02() {
+	input := getInput()
+	res := 0
+
+	for from, to := range parseInput(input) {
+		for i := from; i <= to; i++ {
+			if !checkIsValid02(i) {
+				res += i
+			}
+		}
+	}
+
+	fmt.Printf("Sum of invalid ids: %d\n", res)
 }
 
 func main() {
