@@ -71,6 +71,32 @@ func solvePuzzle01() {
 }
 
 func solvePuzzle02() {
+	input := getInput()
+	matrix := parseInput(input)
+	res := 0
+
+	for {
+		toRemove := [][2]int{}
+
+		for y := range matrix {
+			for x := range matrix[y] {
+				if getElement(matrix, x, y) > 0 && countNeighbours(matrix, x, y) < 4 {
+					toRemove = append(toRemove, [2]int{x, y})
+					res++
+				}
+			}
+		}
+
+		if len(toRemove) == 0 {
+			break
+		}
+
+		for i := range toRemove {
+			matrix[toRemove[i][1]][toRemove[i][0]] = 0
+		}
+	}
+
+	fmt.Printf("Rolls of paper: %d\n", res)
 }
 
 func main() {
