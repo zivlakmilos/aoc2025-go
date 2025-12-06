@@ -44,6 +44,53 @@ func solvePuzzle01() {
 }
 
 func solvePuzzle02() {
+	input := getInput()
+
+	lines := strings.Split(input, "\n")
+	operations := lines[len(lines)-1]
+
+	var op byte
+	res := 0
+	opres := 0
+
+	x := 0
+	for {
+		found := false
+		if x < len(operations) && operations[x] != ' ' {
+			op = operations[x]
+			res += opres
+			if op == '*' {
+				opres = 1
+			} else {
+				opres = 0
+			}
+		}
+		current := 0
+		for y := range len(lines) - 1 {
+			if x < len(lines[y]) {
+				found = true
+				if lines[y][x] != ' ' {
+					current *= 10
+					current += int(lines[y][x] - '0')
+				}
+			}
+		}
+		if current > 0 {
+			if op == '*' {
+				opres *= current
+			} else {
+				opres += current
+			}
+		}
+		x++
+
+		if !found {
+			res += opres
+			break
+		}
+	}
+
+	fmt.Printf("Grand total: %d\n", res)
 }
 
 func main() {
