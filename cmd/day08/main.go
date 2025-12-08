@@ -116,6 +116,52 @@ func solvePuzzle01() {
 }
 
 func solvePuzzle02() {
+	input := getInput()
+	pos := parseInput(input)
+
+	dist := make([]Dist, 0, len(pos)*len(pos))
+
+	for i := range pos {
+		for j := i + 1; j < len(pos); j++ {
+			d := calcDist(pos[i], pos[j])
+			dist = append(dist, Dist{
+				a:    pos[i],
+				b:    pos[j],
+				dist: d,
+			})
+		}
+	}
+
+	slices.SortFunc(dist, func(a, b Dist) int {
+		return a.dist - b.dist
+	})
+
+	parent := make(map[string]string)
+	for _, p := range pos {
+		parent[p.raw] = p.raw
+	}
+
+	circuits := len(pos)
+
+	res := 0
+	for _, d := range dist {
+		rootA := find(parent, d.a.raw)
+		rootB := find(parent, d.b.raw)
+
+		if rootA != rootB {
+			parent[rootA] = rootB
+			circuits--
+
+			if circuits == 1 {
+				ax := d.a.x
+				bx := d.b.x
+				res = ax * bx
+				break
+			}
+		}
+	}
+
+	fmt.Printf("res: %d\n", res)
 }
 
 func main() {
